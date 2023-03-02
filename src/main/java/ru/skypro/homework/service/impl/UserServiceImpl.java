@@ -8,22 +8,49 @@ import ru.skypro.homework.dto.User;
 @Service
 public class UserServiceImpl {
 
-    public CreateUser addUser(CreateUser body) {
+    /**
+     * Метод добавления пользователя
+     *
+     * @param user - пользователь на добавление
+     * @return возвращает добавленного пользователя
+     */
+    public CreateUser addUser(CreateUser user) {
         return null;
     }
 
+    /**
+     * Метод получения всех пользователей
+     */
     public User getUsers() {
         return null;
     }
 
-    public User updateUser(User body) {
+    /**
+     * Метод изменения пользователя
+     *
+     * @param user - пользователь на изменение
+     * @return возвращает обновленного пользователя
+     */
+    public User updateUser(User user) {
         return null;
     }
 
-    public NewPassword setPassword(NewPassword body) {
+    /**
+     * Метод установки пароля
+     *
+     * @param password - новый пароль
+     * @return возвращает установленный пароль
+     */
+    public NewPassword setPassword(NewPassword password) {
         return null;
     }
 
+    /**
+     * Метод получения пользователя
+     *
+     * @param id - ID пользователя
+     * @return возвращает найденного пользователя
+     */
     public User getUser(Integer id) {
         return null;
     }
