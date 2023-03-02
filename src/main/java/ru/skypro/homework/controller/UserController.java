@@ -10,12 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CreateUser;
 import ru.skypro.homework.dto.NewPassword;
-import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.impl.UserServiceImpl;
 
 import javax.validation.Valid;
@@ -25,15 +24,14 @@ import javax.validation.Valid;
 @RestController
 @Validated
 @RequestMapping(value = "users")
-//@PreAuthorize("hasAuthority('ADMIN')")
-public class UsersApiController {
+public class UserController {
     private final UserServiceImpl userService;
 
-    public UsersApiController(UserServiceImpl userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
-    @Operation(summary = "addUser", description = "", tags = {"Пользователи"})
+    @Operation(summary = "addUser", tags = {"Пользователи"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -48,36 +46,36 @@ public class UsersApiController {
         return ResponseEntity.ok(userService.addUser(body));
     }
 
-    @Operation(summary = "getUsers", description = "", tags = {"Пользователи"})
+    @Operation(summary = "getUsers", tags = {"Пользователи"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = UserDto.class))),
+                    schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "me",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UserDto> getUsersUsingGET() {
+    public ResponseEntity<User> getUsersUsingGET() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @Operation(summary = "updateUser", description = "", tags = {"Пользователи"})
+    @Operation(summary = "updateUser", tags = {"Пользователи"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = UserDto.class))),
+                    schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden")})
     @PatchMapping(value = "me",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UserDto> updateUserUsingPATCH(
-            @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema()) @Valid @RequestBody UserDto body) {
+    public ResponseEntity<User> updateUserUsingPATCH(
+            @Parameter(in = ParameterIn.DEFAULT, required = true, schema = @Schema()) @Valid @RequestBody User body) {
         return ResponseEntity.ok(userService.updateUser(body));
     }
 
-    @Operation(summary = "setPassword", description = "", tags = {"Пользователи"})
+    @Operation(summary = "setPassword", tags = {"Пользователи"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -93,17 +91,17 @@ public class UsersApiController {
         return ResponseEntity.ok(userService.setPassword(body));
     }
 
-    @Operation(summary = "getUser", description = "", tags = {"Пользователи"})
+    @Operation(summary = "getUser", tags = {"Пользователи"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = UserDto.class))),
+                    schema = @Schema(implementation = User.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "{id}",
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<UserDto> getUserUsingGET(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUser());
+    public ResponseEntity<User> getUserUsingGET(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.getUser(id));
     }
 }

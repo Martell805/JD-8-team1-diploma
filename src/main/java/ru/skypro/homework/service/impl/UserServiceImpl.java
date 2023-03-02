@@ -3,7 +3,7 @@ package ru.skypro.homework.service.impl;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CreateUser;
 import ru.skypro.homework.dto.NewPassword;
-import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.dto.User;
 
 @Service
 public class UserServiceImpl {
@@ -12,11 +12,11 @@ public class UserServiceImpl {
         return null;
     }
 
-    public UserDto getUsers() {
+    public User getUsers() {
         return null;
     }
 
-    public UserDto updateUser(UserDto body) {
+    public User updateUser(User body) {
         return null;
     }
 
@@ -24,7 +24,7 @@ public class UserServiceImpl {
         return null;
     }
 
-    public UserDto getUser() {
+    public User getUser(Integer id) {
         return null;
     }
 }
