@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
 @Getter
 @Setter
@@ -17,6 +18,14 @@ public class CommentEntity {
     private Integer id;
     private String text;
     private Date createdAt;
-    private Integer adsId;
-    private Integer authorId;
+    private Integer adsId;  //под удаление?
+    private Integer authorId; //под удаление?
+
+    @ManyToOne
+    @JoinColumn(name="adsId")
+    private AdsEntity ads;
+
+    @ManyToOne
+    @JoinColumn(name = "authorId")
+    private UserEntity author;
 }

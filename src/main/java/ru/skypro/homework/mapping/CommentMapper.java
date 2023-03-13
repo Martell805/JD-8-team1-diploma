@@ -16,13 +16,13 @@ public interface  CommentMapper {
     @Mapping(target = "author", source = "author")
     @Mapping(target = "text", source = "text")
     @Mapping(target = "createdAt", source = "createdAt")
-     CommentEntity CommentDtoToEntity(Comment comment);
+     CommentEntity commentDtoToEntity(Comment comment);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "author", source = "author")
     @Mapping(target = "text", source = "text")
     @Mapping(target = "createdAt", source = "createdAt")
-     Comment CommentEntityToDto(CommentEntity commentEntity);
+     Comment commentEntityToDto(CommentEntity commentEntity);
 
     List<CommentEntity> dtoToModel(List<Comment> comments);
 
