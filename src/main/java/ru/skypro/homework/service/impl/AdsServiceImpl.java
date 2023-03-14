@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ads;
@@ -17,7 +18,7 @@ import ru.skypro.homework.mapping.FullAdsMapper;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
@@ -30,10 +31,10 @@ public class AdsServiceImpl implements AdsService {
     private final UserServiceImpl userServiceImpl;
 
     @Override
-    public Ads addAds(CreateAds properties, MultipartFile image, String username) {
+    public Ads addAds(CreateAds properties, MultipartFile image, String email) {
 
         // mapping from dto to entity
-        UserEntity author = userServiceImpl.getUserByUserName(username);
+        UserEntity author = userServiceImpl.getUserByEmail(email);
         AdsEntity adsEntity = createAdsMapper.toModel(properties);
         adsEntity.setAuthor(author);
         //TODO картинка
@@ -71,9 +72,9 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public ResponseWrapperAds getAdsMe(String username) {
+    public ResponseWrapperAds getAdsMe(String email) {
 
-        UserEntity author = userServiceImpl.getUserByUserName(username);;
+        UserEntity author = userServiceImpl.getUserByEmail(email);;
         ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
         responseWrapperAds.setResults(adsMapper.toAdsDtoList(adsRepository.findAdsEntityByAuthor_Id(author.getId())));
         responseWrapperAds.setCount(responseWrapperAds.getResults().size());

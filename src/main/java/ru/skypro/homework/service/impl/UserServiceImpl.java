@@ -30,20 +30,20 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    public User getUsers(String username) {
-        return userMapper.userEntityToDto(getUserByUserName(username));
+    public User getUsers(String email) {
+        return userMapper.userEntityToDto(getUserByEmail(email));
     }
 
-    public UserEntity getUserByUserName(String username) {
-        return usersRepository.findUserEntityByUsername(username).orElseThrow(() -> {
-            log.error("Не найден пользователь: {}", username);
-            return new UserNotFoundException(username);
+    public UserEntity getUserByEmail(String email) {
+        return usersRepository.findByEmail(email).orElseThrow(() -> {
+            log.error("Не найден пользователь: {}", email);
+            return new UserNotFoundException(email);
         });
     }
 
-    public User updateUser(String username, User user) {
+    public User updateUser(String email, User user) {
         UserEntity userEntity = userMapper.userDtoToEntity(user);
-        UserEntity newUser = getUserByUserName(username);
+        UserEntity newUser = getUserByEmail(email);
         if (userEntity.getEmail() != null) {
             newUser.setEmail(userEntity.getEmail());
         }
@@ -61,8 +61,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.userEntityToDto(newUser);
     }
 
-    public ResponseEntity<Void> updateUserImage(String username, MultipartFile image) throws IOException {
-        UserEntity user = getUserByUserName(username);
+    public ResponseEntity<Void> updateUserImage(String email, MultipartFile image) throws IOException {
+        UserEntity user = getUserByEmail(email);
         updateImageOfUser(user, image);
         usersRepository.save(user);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -28,10 +28,10 @@ public interface UserService {
     /**
      * Метод получения Entity пользователя
      *
-     * @param username - логин пользователя
+     * @param email - логин пользователя
      * @return UserEntity
      */
-    UserEntity getUserByUserName(String username);
+    UserEntity getUserByEmail(String email);
 
     /**
      * Метод изменения пользователя
