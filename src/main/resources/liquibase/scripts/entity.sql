@@ -44,23 +44,8 @@ CREATE TABLE posters
 Create TABLE comments
 (
     id         SERIAL NOT NULL PRIMARY KEY,
-    author     INTEGER,
     text       TEXT,
     created_at TIMESTAMP,
-    author_id  INTEGER REFERENCES users (id)
+    author_id  INTEGER REFERENCES users (id),
+    ads_id     INTEGER REFERENCES ads (id)
 );
-
--- changeSet igor:2
-
-ALTER TABLE comments
-    ADD COLUMN ads_id BIGINT REFERENCES ads(id);
-
--- changeSet igor:3
-ALTER TABLE comments DROP COLUMN ads_id;
-
--- changeSet igor:4
-ALTER TABLE comments
-    ADD COLUMN ads_id INTEGER REFERENCES ads(id);
-
--- changeSet igor:5
-ALTER TABLE comments DROP COLUMN author;
