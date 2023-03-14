@@ -40,6 +40,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<AdsEntity> adsList;
 
+    @OneToMany(mappedBy = "author")
+    private List<CommentEntity> commentEntities;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

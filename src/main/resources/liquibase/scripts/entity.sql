@@ -44,9 +44,8 @@ CREATE TABLE posters
 Create TABLE comments
 (
     id         SERIAL NOT NULL PRIMARY KEY,
-    author     INTEGER,
     text       TEXT,
     created_at TIMESTAMP,
-    ads_id     INTEGER,
-    author_id  INTEGER
+    author_id  INTEGER REFERENCES users (id),
+    ads_id     INTEGER REFERENCES ads (id)
 );
