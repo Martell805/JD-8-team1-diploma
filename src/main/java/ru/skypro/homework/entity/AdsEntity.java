@@ -20,6 +20,6 @@ public class AdsEntity {
        @ManyToOne
        @JoinColumn(name = "author_id")
        private UserEntity author;
-        @OneToMany(mappedBy = "commentEntity")
+        @OneToMany(mappedBy = "ads")
         private List<CommentEntity> results; // присоединение comment
 }

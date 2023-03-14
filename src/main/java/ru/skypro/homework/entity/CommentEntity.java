@@ -18,8 +18,6 @@ public class CommentEntity {
     private Integer id;
     private String text;
     private Date createdAt;
-    private Integer adsId;  //под удаление?
-    private Integer authorId; //под удаление?
 
     @ManyToOne
     @JoinColumn(name="adsId")

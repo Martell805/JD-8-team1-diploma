@@ -13,13 +13,13 @@ import java.util.List;
 public interface  CommentMapper {
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "author", source = "author")
+    @Mapping(target = "author.id", source = "author")
     @Mapping(target = "text", source = "text")
     @Mapping(target = "createdAt", source = "createdAt")
      CommentEntity commentDtoToEntity(Comment comment);
 
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "author", source = "author")
+    @Mapping(target = "author", source = "author.id")
     @Mapping(target = "text", source = "text")
     @Mapping(target = "createdAt", source = "createdAt")
      Comment commentEntityToDto(CommentEntity commentEntity);
