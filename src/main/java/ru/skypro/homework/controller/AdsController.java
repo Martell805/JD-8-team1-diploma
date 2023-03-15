@@ -14,11 +14,14 @@ import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.impl.AdsServiceImpl;
+
+import javax.annotation.security.RolesAllowed;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -51,8 +54,8 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Ads> addAds(@RequestPart CreateAds properties,
-                                      @RequestPart MultipartFile image, Authentication authentication) {
+    public ResponseEntity<Ads> addAds(@RequestPart(value = "properties") CreateAds properties,
+                                      @RequestPart(value = "image") MultipartFile image, Authentication authentication) {
         return ResponseEntity.ok(adsServiceImpl.addAds(properties, image, authentication.getName()));
     }
 
@@ -65,6 +68,7 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
     @GetMapping("/me")
+    @RolesAllowed({"USER"})
     public ResponseEntity<ResponseWrapperAds> getAllMeAds(Authentication authentication) {
         return ResponseEntity.ok(adsServiceImpl.getAdsMe(authentication.getName()));
     }
