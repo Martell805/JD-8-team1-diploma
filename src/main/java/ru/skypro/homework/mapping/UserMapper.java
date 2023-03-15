@@ -2,6 +2,7 @@ package ru.skypro.homework.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.UserEntity;
 
@@ -14,6 +15,7 @@ public interface UserMapper {
     @Mapping(target = "lastName", source = "user.lastName")
     @Mapping(target = "phone", source = "user.phone")
     @Mapping(target = "regDate", source  = "user.regDate", dateFormat = "dd/MM/yyyy")
+    @Mapping(target = "username", source = "email")
     UserEntity userDtoToEntity(User user);
 
     @Mapping(target = "id", source = "userEntity.id")
@@ -32,4 +34,12 @@ public interface UserMapper {
             return "/users/" + userEntity.getId() + "/image";
         }
     }
+
+    @Mapping(target = "username", source = "registerReq.username")
+    @Mapping(target = "email", source = "registerReq.username")
+    @Mapping(target = "password", source = "password")
+    @Mapping(target = "firstName", source = "registerReq.firstName")
+    @Mapping(target = "lastName", source = "registerReq.lastName")
+    @Mapping(target = "phone", source = "registerReq.phone")
+    UserEntity registerReqToUserEntity(RegisterReq registerReq, String password);
 }

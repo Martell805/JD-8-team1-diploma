@@ -20,11 +20,11 @@ public class CommentEntity {
     private String text;
     private LocalDate createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="adsId")
+    @ManyToOne
+    @JoinColumn(name="ads_id")
     private AdsEntity ads;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authorId")
+    @ManyToOne
+    @JoinColumn(name = "author_id")
     private UserEntity author;
 }

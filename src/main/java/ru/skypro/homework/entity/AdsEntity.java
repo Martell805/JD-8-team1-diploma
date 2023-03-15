@@ -1,25 +1,56 @@
 package ru.skypro.homework.entity;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Objects;
 
+@Getter
+@Setter
+@ToString
 @Entity
-@Data
 @Table(name = "ads")
-
 public class AdsEntity {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer id;
-        private String title;
-        private Integer imageId;
-        private int price;
-        private String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
+    @Column(name = "title")
+    @NotNull
+    private String title;
+    @OneToOne
+    @JoinColumn(name = "id")
+    private PosterEntity image;
+    @Column(name = "price")
+    @PositiveOrZero
+    @NotNull
+    private Integer price;
+    @Column(name = "description")
+    @NotNull
+    private String description;
 
-       @ManyToOne
-       @JoinColumn(name = "author_id")
-       private UserEntity author;
-        @OneToMany(mappedBy = "ads")
-        private List<CommentEntity> results; // присоединение comment
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    @NotNull
+    private UserEntity author;
+    @OneToMany(mappedBy = "ads")
+    @ToString.Exclude
+    private List<CommentEntity> results; // присоединение comment
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        AdsEntity adsEntity = (AdsEntity) o;
+        return getId() != null && Objects.equals(getId(), adsEntity.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
