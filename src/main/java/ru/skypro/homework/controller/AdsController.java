@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.service.impl.AdsServiceImpl;
+import ru.skypro.homework.service.impl.CommentServiceImpl;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -22,6 +23,8 @@ import ru.skypro.homework.service.impl.AdsServiceImpl;
 @RequestMapping("/ads")
 public class AdsController {
     private final AdsServiceImpl adsServiceImpl;
+    private final CommentServiceImpl commentServiceImpl;
+
     @Operation(summary = "getALLAds", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
@@ -71,7 +74,7 @@ public class AdsController {
     })
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentServiceImpl.getAllCommentsByAd(id));
     }
     @Operation(summary = "addComments", tags = {"Объявления"})
     @ApiResponses(value = {
@@ -85,8 +88,9 @@ public class AdsController {
     })
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
-                                              @RequestBody Comment comments) {
-        return ResponseEntity.ok().build();
+                                              @RequestBody Comment comments,
+                                              Authentication authentication) {
+        return ResponseEntity.ok(commentServiceImpl.addComment(id, comments, authentication));
     }
 
     @Operation(summary = "deleteComment", tags = {"Объявления"})
@@ -98,10 +102,11 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @DeleteMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable Integer id,
+    @DeleteMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
-        return ResponseEntity.ok().build();
+       commentServiceImpl.deleteComment(adId, commentId);
+       return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "getComment", tags = {"Объявления"})
@@ -111,13 +116,13 @@ public class AdsController {
                     schema = @Schema(implementation = Comment.class))),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @GetMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> getComment(@PathVariable Integer id,
+    @GetMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentServiceImpl.getComment(adId, commentId));
     }
 
-    @Operation(summary = "getComment", tags = {"Объявления"})
+    @Operation(summary = "updateComment", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -126,11 +131,12 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @PatchMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer id,
+    @PatchMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId,
                                                   @PathVariable Integer commentId,
-                                                  @RequestBody Comment comment) {
-        return ResponseEntity.ok().build();
+                                                  @RequestBody Comment comment,
+                                                  Authentication authentication) {
+        return ResponseEntity.ok(commentServiceImpl.updateComment(adId, commentId, comment, authentication));
     }
     @Operation(summary = "removeAds", tags = {"Объявления"})
     @ApiResponses(value = {
