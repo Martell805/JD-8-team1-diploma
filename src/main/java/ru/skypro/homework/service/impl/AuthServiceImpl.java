@@ -33,22 +33,19 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean login(String userName, String password) {
         if (!manager.userExists(userName)) {
-            log.error("Failed authorization attempt. Cause:");
-            log.warn("User with userName: {} not found", userName);
+            log.error("Ошибка входа, пользователь {} не найден", userName);
             throw new UserNotFoundException(userName);
         }
         UserDetails userDetails = manager.loadUserByUsername(userName);
-        log.info("1");
         String encryptedPassword = userDetails.getPassword();
-        log.info("pass: {}", encryptedPassword);
+        log.debug("pass: {}", encryptedPassword);
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
-        log.info("pass: {}", encryptedPasswordWithoutEncryptionType);
+        log.debug("pass: {}", encryptedPasswordWithoutEncryptionType);
         boolean isLoggedIn = encoder.matches(password, encryptedPasswordWithoutEncryptionType);
         if (isLoggedIn) {
-            log.info("User with userName: {} successfully logged in", userName);
+            log.info("Пользователь удачно вошел - {}", userName);
         } else {
-            log.warn("Failed authorization attempt.  Cause:");
-            log.warn("Attempt to enter an incorrect password by userName:{}", userName);
+            log.warn("Ошибка входа. Не верный пароль пользователя {} ", userName);
         }
         return isLoggedIn;
     }
