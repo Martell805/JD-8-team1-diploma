@@ -1,18 +1,23 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.impl.AdsServiceImpl;
 
 @Slf4j
@@ -22,6 +27,7 @@ import ru.skypro.homework.service.impl.AdsServiceImpl;
 @RequestMapping("/ads")
 public class AdsController {
     private final AdsServiceImpl adsServiceImpl;
+    private final CommentService commentService;
 
     @Operation(summary = "getALLAds", tags = {"Объявления"})
     @ApiResponses(value = {
@@ -72,7 +78,7 @@ public class AdsController {
     })
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
-        return ResponseEntity.ok(commentServiceImpl.getAllCommentsByAd(id));
+        return ResponseEntity.ok(commentService.getAllCommentsByAd(id));
     }
     @Operation(summary = "addComments", tags = {"Объявления"})
     @ApiResponses(value = {
@@ -88,7 +94,7 @@ public class AdsController {
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody Comment comments,
                                               Authentication authentication) {
-        return ResponseEntity.ok(commentServiceImpl.addComment(id, comments, authentication));
+        return ResponseEntity.ok(commentService.addComment(id, comments, authentication));
     }
 
     @Operation(summary = "deleteComment", tags = {"Объявления"})
@@ -103,7 +109,7 @@ public class AdsController {
     @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
-       commentServiceImpl.deleteComment(adId, commentId);
+       commentService.deleteComment(adId, commentId);
        return ResponseEntity.ok().build();
     }
 
@@ -117,7 +123,7 @@ public class AdsController {
     @GetMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
-        return ResponseEntity.ok(commentServiceImpl.getComment(adId, commentId));
+        return ResponseEntity.ok(commentService.getComment(adId, commentId));
     }
 
     @Operation(summary = "updateComment", tags = {"Объявления"})
@@ -134,7 +140,7 @@ public class AdsController {
                                                   @PathVariable Integer commentId,
                                                   @RequestBody Comment comment,
                                                   Authentication authentication) {
-        return ResponseEntity.ok(commentServiceImpl.updateComment(adId, commentId, comment, authentication));
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
     }
     @Operation(summary = "removeAds", tags = {"Объявления"})
     @ApiResponses(value = {

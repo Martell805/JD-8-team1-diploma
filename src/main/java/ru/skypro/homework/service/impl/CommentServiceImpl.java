@@ -34,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment addComment(Integer id, Comment comment, Authentication authentication) {
 
         CommentEntity newComment = commentMapper.commentDtoToEntity(comment);
-        newComment.setAuthor(userRepository.findUserEntityByEmail(authentication.getName())
+        newComment.setAuthor(userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UserNotFoundException(authentication.getName())));
         newComment.setAds(adsRepository.findById(id)
                 .orElseThrow(() -> new AdsNotFoundException(id)));
@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment updateComment(Integer adId, Integer commentId, Comment comment, Authentication authentication) {
         CommentEntity findComment = findComment(adId, commentId);
 
-        UserEntity findUser = userRepository.findUserEntityByEmail(authentication.getName())
+        UserEntity findUser = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UserNotFoundException(authentication.getName()));
 
         if (findComment.getAuthor().getId().equals(findUser.getId())) {

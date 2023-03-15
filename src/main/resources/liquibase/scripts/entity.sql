@@ -40,7 +40,7 @@ CREATE TABLE posters
     path   TEXT
 );
 
--- changeSet igor:1
+-- changeSet igor:2
 Create TABLE comments
 (
     id         SERIAL NOT NULL PRIMARY KEY,

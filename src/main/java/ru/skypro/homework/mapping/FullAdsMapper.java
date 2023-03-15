@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 import ru.skypro.homework.dto.FullAds;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.AdsEntity;
-import ru.skypro.homework.entity.UserEntity;
 
 @Mapper(componentModel = "spring")
 public interface FullAdsMapper {
@@ -19,7 +18,7 @@ public interface FullAdsMapper {
     @Mapping(target = "authorLastName", source = "author.lastName")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "email", source = "author.email")
-    @Mapping(target = "image", source = "imageId")
+    @Mapping(target = "image", source = "image.id")
     @Mapping(target = "phone", source = "author.phone")
     @Mapping(target = "price", source = "price")
     @Mapping(target = "title", source = "title")
@@ -30,7 +29,7 @@ public interface FullAdsMapper {
     @Mapping(source = "authorLastName", target = "author.lastName")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "email", target = "author.email")
-    @Mapping(source = "image", target = "imageId")
+    @Mapping(source = "image", target = "image.id")
     @Mapping(source = "phone", target = "author.phone")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "title", target = "title")
