@@ -20,10 +20,10 @@ public class CommentEntity {
     private Date createdAt;
 
     @ManyToOne
-    @JoinColumn(name="adsId")
+    @JoinColumn(name="ads_id")
     private AdsEntity ads;
 
     @ManyToOne
-    @JoinColumn(name = "authorId")
+    @JoinColumn(name = "author_id")
     private UserEntity author;
 }

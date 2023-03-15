@@ -49,3 +49,13 @@ Create TABLE comments
     author_id  INTEGER REFERENCES users (id),
     ads_id     INTEGER REFERENCES ads (id)
 );
+
+-- changeSet andrew:2
+ALTER TABLE users ADD COLUMN enabled BOOLEAN DEFAULT TRUE;
+
+CREATE TABLE authorities
+(
+    id        SERIAL PRIMARY KEY,
+    username  varchar(30) NOT NULL UNIQUE,
+    authority varchar(30) NOT NULL
+);

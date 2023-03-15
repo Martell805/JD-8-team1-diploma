@@ -1,11 +1,13 @@
 package ru.skypro.homework.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Ads {
     private Integer id;
-    private Integer imageId;
+    private String imageId;
     private Integer author;
     private Integer price;
     private String title;

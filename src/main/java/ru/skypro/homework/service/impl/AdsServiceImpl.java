@@ -1,6 +1,8 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ads;
@@ -10,14 +12,17 @@ import ru.skypro.homework.dto.ResponseWrapperAds;
 import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.AdsNotFoundException;
-import ru.skypro.homework.exception.UserNotFoundException;
+import ru.skypro.homework.exception.PosterNotFoundException;
 import ru.skypro.homework.mapping.AdsMapper;
 import ru.skypro.homework.mapping.CreateAdsMapper;
 import ru.skypro.homework.mapping.FullAdsMapper;
 import ru.skypro.homework.repository.AdsRepository;
-import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.PosterService;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdsServiceImpl implements AdsService {
@@ -25,15 +30,15 @@ public class AdsServiceImpl implements AdsService {
     private final AdsMapper adsMapper;
     private final CreateAdsMapper createAdsMapper;
     private final FullAdsMapper fullAdsMapper;
-
     private final AdsRepository adsRepository;
     private final UserServiceImpl userServiceImpl;
+    private final PosterService posterService;
 
     @Override
-    public Ads addAds(CreateAds properties, MultipartFile image, String username) {
+    public Ads addAds(CreateAds properties, MultipartFile image, String email) {
 
         // mapping from dto to entity
-        UserEntity author = userServiceImpl.getUserByUserName(username);
+        UserEntity author = userServiceImpl.getUserByEmail(email);
         AdsEntity adsEntity = createAdsMapper.toModel(properties);
         adsEntity.setAuthor(author);
         //TODO картинка
@@ -62,21 +67,38 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public ResponseWrapperAds getAllAds() {
-        ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
-        responseWrapperAds.setResults(adsMapper.toAdsDtoList(adsRepository.findAll()));
-        int countAds = responseWrapperAds.getResults().size();
-        responseWrapperAds.setCount(countAds);
-        //entity to ads
-        return responseWrapperAds;
+        List<Ads> listDto = adsMapper.toAdsDtoList(
+                adsRepository.findAll()
+        );
+        return adsMapper.mapToResponseWrapperAdsDto(listDto, listDto.size());
     }
 
     @Override
-    public ResponseWrapperAds getAdsMe(String username) {
+    public ResponseWrapperAds getAdsMe(String email) {
 
-        UserEntity author = userServiceImpl.getUserByUserName(username);;
+        UserEntity author = userServiceImpl.getUserByEmail(email);
         ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
         responseWrapperAds.setResults(adsMapper.toAdsDtoList(adsRepository.findAdsEntityByAuthor_Id(author.getId())));
         responseWrapperAds.setCount(responseWrapperAds.getResults().size());
         return responseWrapperAds;
+    }
+
+    /**
+     * Метод получает постер для об объявления по его ID
+     *
+     * @param adsId ID объявления
+     * @return poster
+     */
+    @Override
+    public Pair<byte[], String> getPoster(Integer adsId) {
+        AdsEntity ads = adsRepository.findById(adsId).orElseThrow(() -> {
+            log.error("Объявление с ID: {} не найдено", adsId);
+            return new AdsNotFoundException(adsId);
+        });
+        if (ads.getImage() == null) {
+            log.error("Постер для объявления с ID: {} null", ads.getId());
+            throw new PosterNotFoundException();
+        }
+        return posterService.getPosterData(ads.getImage());
     }
 }
