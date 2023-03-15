@@ -32,10 +32,12 @@ public class UserEntity {
     @OneToOne
     @JoinColumn(name = "id")
     private AvatarEntity avatar;
-    @Column(name = "username")
-    private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "username")
+    private String username;
+    @Column(name = "enabled")
+    private boolean enabled;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<AdsEntity> adsList;
@@ -48,11 +50,11 @@ public class UserEntity {
         if (this == o) return true;
         if (!(o instanceof UserEntity)) return false;
         UserEntity that = (UserEntity) o;
-        return id.equals(that.id) && Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && Objects.equals(regDate, that.regDate) && Objects.equals(password, that.password) && Objects.equals(username, that.username);
+        return enabled == that.enabled && Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && Objects.equals(regDate, that.regDate) && Objects.equals(avatar, that.avatar) && Objects.equals(password, that.password) && Objects.equals(username, that.username) && Objects.equals(adsList, that.adsList) && Objects.equals(commentEntities, that.commentEntities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, regDate, password, username);
+        return Objects.hash(id, email, firstName, lastName, phone, regDate, avatar, password, username, enabled);
     }
 }

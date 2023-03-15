@@ -1,12 +1,16 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,13 +26,14 @@ import ru.skypro.homework.service.impl.AdsServiceImpl;
 @RequestMapping("/ads")
 public class AdsController {
     private final AdsServiceImpl adsServiceImpl;
+
     @Operation(summary = "getALLAds", tags = {"Объявления"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ResponseWrapperAds.class)))
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ResponseWrapperAds.class)))
     })
-    @GetMapping
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseWrapperAds> getAllAds() {
         return ResponseEntity.ok(adsServiceImpl.getAllAds());
     }
@@ -73,6 +78,7 @@ public class AdsController {
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
         return ResponseEntity.ok().build();
     }
+
     @Operation(summary = "addComments", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
@@ -132,6 +138,7 @@ public class AdsController {
                                                   @RequestBody Comment comment) {
         return ResponseEntity.ok().build();
     }
+
     @Operation(summary = "removeAds", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
@@ -176,16 +183,30 @@ public class AdsController {
         return ResponseEntity.ok(adsServiceImpl.updateAds(id, createAds));
     }
 
-    @Operation(summary = "updateAdsImage", tags = {"Объявления"}) // пока не сделала
+    @Operation(
+            summary = "getPoster",
+            description = "Возвращает данные постера для объявления",
+            tags = {"Изображения"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = Ads.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found"),
-    })
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateAdsImage(@PathVariable Integer id,
-                                                 @RequestPart MultipartFile image) {
-        return ResponseEntity.ok().build();
+            @ApiResponse(responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
+            @ApiResponse(responseCode = "404",
+                    description = "Not Found")})
+    @GetMapping(value = "{adsId}/image",
+            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    public ResponseEntity<byte[]> getPoster(
+            @Parameter(in = ParameterIn.PATH, description = "ID объявления")
+            @PathVariable("adsId") Integer idAds) {
+        Pair<byte[], String> pair = adsServiceImpl.getPoster(idAds);
+        return read(pair);
+    }
+
+    private ResponseEntity<byte[]> read(Pair<byte[], String> pair) {
+        return ResponseEntity.ok()
+                .contentLength(pair.getFirst().length)
+                .contentType(MediaType.parseMediaType(pair.getSecond()))
+                .body(pair.getFirst());
     }
 }

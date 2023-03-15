@@ -1,12 +1,11 @@
 package ru.skypro.homework.service;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateAds;
 import ru.skypro.homework.dto.FullAds;
 import ru.skypro.homework.dto.ResponseWrapperAds;
-import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.exception.AdsNotFoundException;
 
 /**
@@ -64,5 +63,7 @@ public interface AdsService {
      * @return
      */
     ResponseWrapperAds getAdsMe(String username);
+
+    Pair<byte[], String> getPoster(Integer idAds);
 }
 

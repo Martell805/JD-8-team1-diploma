@@ -2,12 +2,16 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
+import ru.skypro.homework.dto.RegisterReq;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.User;
+import ru.skypro.homework.entity.Authority;
 import ru.skypro.homework.entity.UserEntity;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapping.UserMapper;
@@ -16,6 +20,9 @@ import ru.skypro.homework.service.AvatarService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,9 +32,15 @@ public class UserServiceImpl implements UserService {
     private final UserRepository usersRepository;
     private final UserMapper userMapper;
     private final AvatarService avatarService;
+    private final AuthorityServiceImpl authorityService;
 
-    public NewPassword setPassword(NewPassword password) {
-        return null;
+    public Pair<UserEntity, Authority> addUser(RegisterReq registerReq, String password) {
+        UserEntity userEntity = userMapper.registerReqToUserEntity(registerReq, password);
+        userEntity.setRegDate(LocalDate.now());
+        userEntity.setEnabled(true);
+        userEntity = usersRepository.save(userEntity);
+        Authority authority = authorityService.addAuthority(userEntity, Role.USER);
+        return Pair.of(userEntity, authority);
     }
 
     public User getUsers(String email) {
@@ -39,6 +52,10 @@ public class UserServiceImpl implements UserService {
             log.error("Не найден пользователь: {}", email);
             return new UserNotFoundException(email);
         });
+    }
+
+    public NewPassword setPassword(NewPassword password) {
+        return null;
     }
 
     public User updateUser(String email, User user) {
@@ -61,20 +78,26 @@ public class UserServiceImpl implements UserService {
         return userMapper.userEntityToDto(newUser);
     }
 
-    public ResponseEntity<Void> updateUserImage(String email, MultipartFile image) throws IOException {
-        UserEntity user = getUserByEmail(email);
-        updateImageOfUser(user, image);
-        usersRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> updateUserAvatar(String email, MultipartFile image) throws IOException {
+        UserEntity userEntity = getUserByEmail(email);
+        updateAvatarOfUserEntity(userEntity, image);
+        userEntity = usersRepository.save(userEntity);
+        if (userEntity.getAvatar() != null && userEntity.getAvatar().getPath() != null
+                && Files.exists(Path.of(userEntity.getAvatar().getPath()))) {
+            log.info("Аватар пользователя с (id: {}) обновлен", userEntity.getId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    private void updateImageOfUser(UserEntity user, MultipartFile image) throws IOException {
-        if (user.getAvatar() == null) {
+    private void updateAvatarOfUserEntity(UserEntity userEntity, MultipartFile image) throws IOException {
+        if (userEntity.getAvatar() == null) {
             //user.setAvatar(avatarService.);
-            log.info("Добавляем аватар пользователю (id: {})", user.getId());
+            log.info("Добавляем аватар пользователю (id: {})", userEntity.getId());
         } else {
             //user.setAvatar(avatarService.);
-            log.info("Обновили аватар (id: {}) пользователю (id: {})", user.getAvatar().getId(), user.getId());
+            log.info("Обновили аватар (id: {}) пользователю (id: {})", userEntity.getAvatar().getId(), userEntity.getId());
         }
     }
 }
