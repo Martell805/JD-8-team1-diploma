@@ -45,7 +45,7 @@ Create TABLE comments
 (
     id         SERIAL NOT NULL PRIMARY KEY,
     text       TEXT,
-    created_at TIMESTAMP,
+    created_at DATE,
     author_id  INTEGER REFERENCES users (id),
     ads_id     INTEGER REFERENCES ads (id)
 );

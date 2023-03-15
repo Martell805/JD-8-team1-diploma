@@ -1,16 +1,12 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -76,9 +72,8 @@ public class AdsController {
     })
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentServiceImpl.getAllCommentsByAd(id));
     }
-
     @Operation(summary = "addComments", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
@@ -91,8 +86,9 @@ public class AdsController {
     })
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
-                                              @RequestBody Comment comments) {
-        return ResponseEntity.ok().build();
+                                              @RequestBody Comment comments,
+                                              Authentication authentication) {
+        return ResponseEntity.ok(commentServiceImpl.addComment(id, comments, authentication));
     }
 
     @Operation(summary = "deleteComment", tags = {"Объявления"})
@@ -104,10 +100,11 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @DeleteMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable Integer id,
+    @DeleteMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
-        return ResponseEntity.ok().build();
+       commentServiceImpl.deleteComment(adId, commentId);
+       return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "getComment", tags = {"Объявления"})
@@ -117,13 +114,13 @@ public class AdsController {
                     schema = @Schema(implementation = Comment.class))),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @GetMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> getComment(@PathVariable Integer id,
+    @GetMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(commentServiceImpl.getComment(adId, commentId));
     }
 
-    @Operation(summary = "getComment", tags = {"Объявления"})
+    @Operation(summary = "updateComment", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -132,13 +129,13 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @PatchMapping("/{id}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable Integer id,
+    @PatchMapping("/{adId}/comments/{commentId}")
+    public ResponseEntity<Comment> updateComments(@PathVariable Integer adId,
                                                   @PathVariable Integer commentId,
-                                                  @RequestBody Comment comment) {
-        return ResponseEntity.ok().build();
+                                                  @RequestBody Comment comment,
+                                                  Authentication authentication) {
+        return ResponseEntity.ok(commentServiceImpl.updateComment(adId, commentId, comment, authentication));
     }
-
     @Operation(summary = "removeAds", tags = {"Объявления"})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
