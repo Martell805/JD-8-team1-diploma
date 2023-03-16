@@ -23,7 +23,7 @@ public class AdsEntity {
     @NotNull
     private String title;
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "image_id")
     private PosterEntity image;
     @Column(name = "price")
     @PositiveOrZero

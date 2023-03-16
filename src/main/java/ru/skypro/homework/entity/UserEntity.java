@@ -30,7 +30,7 @@ public class UserEntity {
     @Column(name = "reg_date")
     private LocalDate regDate;
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "image_id")
     private AvatarEntity avatar;
     @Column(name = "password")
     private String password;

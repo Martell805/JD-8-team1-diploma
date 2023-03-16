@@ -14,6 +14,8 @@ import java.io.IOException;
 public interface UserService {
     Pair<UserEntity, Authority> addUser(RegisterReq registerReq, String password);
 
+    Pair<byte[], String> getAvatarDataOfUser(UserEntity userEntity);
+
     /**
      * Метод установки пароля
      *
@@ -37,6 +39,22 @@ public interface UserService {
      * @return UserEntity
      */
     UserEntity getUserByEmail(String email);
+
+    /**
+     * Метод получения аватара пользователя
+     *
+     * @param email - логин пользователя
+     * @return Pair
+     */
+    Pair<byte[], String> getAvatarMe(String email);
+
+    /**
+     * Метод получения аватара пользователя по ID
+     *
+     * @param userId - ID пользователя
+     * @return Pair
+     */
+    Pair<byte[], String> getAvatarOfUser(Integer userId);
 
     /**
      * Метод изменения пользователя

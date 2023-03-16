@@ -1,53 +1,20 @@
 package ru.skypro.homework.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.Avatar;
+import org.springframework.data.util.Pair;
+import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.AvatarEntity;
-import ru.skypro.homework.exception.AvatarNotFoundException;
-import ru.skypro.homework.mapping.AvatarMapper;
-import ru.skypro.homework.repository.AvatarRepository;
-import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class AvatarService {
-    private final AvatarRepository avatarRepository;
-    private final AvatarMapper avatarMapping;
+import java.io.IOException;
+import java.nio.file.Path;
 
-    public AvatarEntity getAvatarById(Integer id) {
-        return avatarRepository.findById(id).orElseThrow(AvatarNotFoundException::new);
-    }
+public interface AvatarService {
+    AvatarEntity addAvatar(MultipartFile file, String filename) throws IOException;
 
-    public AvatarEntity getByUserId(Integer userId) {
-        return avatarRepository.findByUserId(userId).orElseThrow(AvatarNotFoundException::new);
-    }
+    Pair<byte[], String> getAvatarData(AvatarEntity avatarEntity);
 
-    public AvatarEntity saveAvatar(AvatarEntity avatarEntity) {
-        return avatarRepository.save(avatarEntity);
-    }
+    AvatarEntity updateAvatar(AvatarEntity avatar, MultipartFile file, String filename);
 
-    public AvatarEntity saveAvatar(Avatar avatar) {
-        return avatarRepository.save(fromDTOToEntity(avatar));
-    }
+    void deleteAvatar(AvatarEntity avatarEntity);
 
-    public void deleteAvatarById(Integer id) {
-        avatarRepository.deleteById(id);
-    }
-
-    public Avatar fromEntityToDTO(AvatarEntity avatarEntity) {
-        return avatarMapping.toDto(avatarEntity);
-    }
-
-    public AvatarEntity fromDTOToEntity(Avatar avatar) {
-        return avatarMapping.toEntity(avatar);
-    }
-
-    public List<Avatar> fromEntityListToDTOList(List<AvatarEntity> avatarEntities) {
-        return avatarMapping.toDtoList(avatarEntities);
-    }
-
-    public List<AvatarEntity> fromDTOListToEntityList(List<Avatar> avatars) {
-        return avatarMapping.toEntityList(avatars);
-    }
+    Path generatePath(MultipartFile file, String filename);
 }

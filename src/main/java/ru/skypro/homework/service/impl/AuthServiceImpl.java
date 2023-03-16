@@ -43,9 +43,9 @@ public class AuthServiceImpl implements AuthService {
         log.debug("pass: {}", encryptedPasswordWithoutEncryptionType);
         boolean isLoggedIn = encoder.matches(password, encryptedPasswordWithoutEncryptionType);
         if (isLoggedIn) {
-            log.info("Пользователь удачно вошел - {}", userName);
+            log.info("Пользователь успешно вошел - {}", userName);
         } else {
-            log.warn("Ошибка входа. Не верный пароль пользователя {} ", userName);
+            log.warn("Ошибка входа. Неверный пароль пользователя {} ", userName);
         }
         return isLoggedIn;
     }

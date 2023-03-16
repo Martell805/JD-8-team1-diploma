@@ -14,7 +14,7 @@ public interface CommentService {
      * @param comment        - {@link Comment};
      * @param authentication - аутентификация пользователя;
      * @return Созданный комментарий;
-     * @throws AdsNotFoundException
+     * @throws AdsNotFoundException - не найдено объявление
      */
     Comment addComment(Integer id, Comment comment, Authentication authentication);
     /**
@@ -24,10 +24,9 @@ public interface CommentService {
      * @param commentId - id комментария;
      * @param comment   - {@link Comment};
      * @return Обновленный комментарий;
-     * @throws CommentNotFoundException
+     * @throws CommentNotFoundException - не найден комментарий
      */
-
-    Comment updateComment(Integer adId, Integer commentId, Comment comment, Authentication authentication);
+    Comment updateComment(Integer adId, Integer commentId, Comment comment, String authorName);
 
     /**
      * Получения комментария по id.
@@ -35,7 +34,7 @@ public interface CommentService {
      * @param adId - id объявления;
      * @param commentId - id комментария;
      * @return Найденый комментарий;
-     * @throws CommentNotFoundException
+     * @throws CommentNotFoundException - не найден комментарий
      */
     Comment getComment(Integer adId, Integer commentId);
     /**
@@ -43,7 +42,7 @@ public interface CommentService {
      *
      * @param adId - id объявления;
      * @param commentId - id комментария;
-     * @throws CommentNotFoundException
+     * @throws CommentNotFoundException - не найден комментарий
      */
     void deleteComment(Integer adId, Integer commentId);
     /**
@@ -53,4 +52,6 @@ public interface CommentService {
      * @return Список всех комментариев.
      */
     ResponseWrapperComment getAllCommentsByAd(Integer id);
+
+    void removeAllCommentsOfAds(Integer id);
 }
