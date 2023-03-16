@@ -8,31 +8,35 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.impl.AdsServiceImpl;
 
 import javax.annotation.security.RolesAllowed;
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
+@Tag(name = "Объявления")
+@SecurityRequirement(name = "basicAuth")
 public class AdsController {
-    private final AdsServiceImpl adsServiceImpl;
+    private final AdsService adsService;
     private final CommentService commentService;
 
-    @Operation(summary = "getALLAds", tags = {"Объявления"})
+    @Operation(summary = "getALLAds")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -40,10 +44,10 @@ public class AdsController {
     })
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ResponseWrapperAds> getAllAds() {
-        return ResponseEntity.ok(adsServiceImpl.getAllAds());
+        return ResponseEntity.ok(adsService.getAllAds());
     }
 
-    @Operation(summary = "addAds", tags = {"Объявления"})
+    @Operation(summary = "addAds")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -54,12 +58,13 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RolesAllowed({"USER"})
     public ResponseEntity<Ads> addAds(@RequestPart(value = "properties") CreateAds properties,
-                                      @RequestPart(value = "image") MultipartFile image, Authentication authentication) {
-        return ResponseEntity.ok(adsServiceImpl.addAds(properties, image, authentication.getName()));
+                                      @RequestPart(value = "image") MultipartFile image, Authentication authentication) throws IOException {
+        return ResponseEntity.ok(adsService.addAds(properties, image, authentication.getName()));
     }
 
-    @Operation(summary = "getAdsMe", tags = {"Объявления"})
+    @Operation(summary = "getAdsMe")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -70,10 +75,10 @@ public class AdsController {
     @GetMapping("/me")
     @RolesAllowed({"USER"})
     public ResponseEntity<ResponseWrapperAds> getAllMeAds(Authentication authentication) {
-        return ResponseEntity.ok(adsServiceImpl.getAdsMe(authentication.getName()));
+        return ResponseEntity.ok(adsService.getAdsMe(authentication.getName()));
     }
 
-    @Operation(summary = "getComments", tags = {"Объявления"})
+    @Operation(summary = "getComments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -81,10 +86,12 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{id}/comments")
+    @RolesAllowed({"USER"})
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getAllCommentsByAd(id));
     }
-    @Operation(summary = "addComments", tags = {"Объявления"})
+
+    @Operation(summary = "addComments")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -95,13 +102,14 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping("/{id}/comments")
+    @RolesAllowed({"USER"})
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody Comment comments,
                                               Authentication authentication) {
         return ResponseEntity.ok(commentService.addComment(id, comments, authentication));
     }
 
-    @Operation(summary = "deleteComment", tags = {"Объявления"})
+    @Operation(summary = "deleteComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -111,13 +119,14 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
+    @RolesAllowed({"USER"})
     public ResponseEntity<Comment> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
-       commentService.deleteComment(adId, commentId);
-       return ResponseEntity.ok().build();
+        commentService.deleteComment(adId, commentId);
+        return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "getComment", tags = {"Объявления"})
+    @Operation(summary = "getComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -125,12 +134,13 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{adId}/comments/{commentId}")
+    @RolesAllowed({"USER"})
     public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
         return ResponseEntity.ok(commentService.getComment(adId, commentId));
     }
 
-    @Operation(summary = "updateComment", tags = {"Объявления"})
+    @Operation(summary = "updateComment")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -140,13 +150,15 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PatchMapping("/{adId}/comments/{commentId}")
+    @RolesAllowed({"USER"})
     public ResponseEntity<Comment> updateComments(@PathVariable Integer adId,
                                                   @PathVariable Integer commentId,
                                                   @RequestBody Comment comment,
                                                   Authentication authentication) {
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
     }
-    @Operation(summary = "removeAds", tags = {"Объявления"})
+
+    @Operation(summary = "removeAds")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -156,12 +168,12 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Ads> removeAds(@PathVariable Integer id) {
-        adsServiceImpl.deleteAds(id);
-        return ResponseEntity.noContent().build();
+    @RolesAllowed({"USER"})
+    public ResponseEntity<Void> removeAds(@PathVariable Integer id) {
+        return adsService.deleteAds(id);
     }
 
-    @Operation(summary = "getFullAd", tags = {"Объявления"})
+    @Operation(summary = "getFullAd")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -170,11 +182,12 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @GetMapping("/{id}")
+    @RolesAllowed({"USER"})
     public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
-        return ResponseEntity.ok(adsServiceImpl.getFullAds(id));
+        return ResponseEntity.ok(adsService.getFullAds(id));
     }
 
-    @Operation(summary = "updateAds", tags = {"Объявления"})
+    @Operation(summary = "updateAds")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -185,9 +198,26 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found"),
     })
     @PatchMapping("/{id}")
+    @RolesAllowed({"USER"})
     public ResponseEntity<Ads> updateAds(@PathVariable Integer id,
                                          @RequestBody CreateAds createAds) {
-        return ResponseEntity.ok(adsServiceImpl.updateAds(id, createAds));
+        return ResponseEntity.ok(adsService.updateAds(id, createAds));
+    }
+
+    @Operation(summary = "updateAdsPoster")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(
+                    mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
+            @ApiResponse(responseCode = "404", description = "Not Found")})
+    @PatchMapping(value = "{id}/image",
+                    produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE},
+                    consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @RolesAllowed({"USER"})
+    public ResponseEntity<byte[]> updatePoster(@PathVariable("id") Integer adsId,
+                                              @RequestPart MultipartFile image) throws IOException {
+        Pair<byte[], String> pair = adsService.updatePosterOfAds(adsId, image);
+        return read(pair);
     }
 
     @Operation(
@@ -195,18 +225,16 @@ public class AdsController {
             description = "Возвращает данные постера для объявления",
             tags = {"Изображения"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "OK",
+            @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
-            @ApiResponse(responseCode = "404",
-                    description = "Not Found")})
-    @GetMapping(value = "{adsId}/image",
-            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+                    array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
+            @ApiResponse(responseCode = "404", description = "Not Found")})
+    @GetMapping(value = "{adsId}/image", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @RolesAllowed({"USER"})
     public ResponseEntity<byte[]> getPoster(
             @Parameter(in = ParameterIn.PATH, description = "ID объявления")
             @PathVariable("adsId") Integer idAds) {
-        Pair<byte[], String> pair = adsServiceImpl.getPoster(idAds);
+        Pair<byte[], String> pair = adsService.getPoster(idAds);
         return read(pair);
     }
 

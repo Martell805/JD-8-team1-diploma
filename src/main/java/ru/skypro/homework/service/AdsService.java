@@ -1,12 +1,15 @@
 package ru.skypro.homework.service;
 
 import org.springframework.data.util.Pair;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateAds;
 import ru.skypro.homework.dto.FullAds;
 import ru.skypro.homework.dto.ResponseWrapperAds;
 import ru.skypro.homework.exception.AdsNotFoundException;
+
+import java.io.IOException;
 
 /**
  * Сервис объявлений
@@ -22,7 +25,7 @@ public interface AdsService {
      * @param username
      * @return Созданное объявление
      */
-    Ads addAds(CreateAds properties, MultipartFile image, String username);
+    Ads addAds(CreateAds properties, MultipartFile image, String username) throws IOException;
 
     /**
      * Удаляет запись из БД по id
@@ -30,7 +33,7 @@ public interface AdsService {
      * @param id
      * @throws AdsNotFoundException исключение, если запись с id не найдена
      */
-    void deleteAds(Integer id);
+    ResponseEntity<Void> deleteAds(Integer id);
 
     /**
      * Изменяет объявление
@@ -65,5 +68,7 @@ public interface AdsService {
     ResponseWrapperAds getAdsMe(String username);
 
     Pair<byte[], String> getPoster(Integer idAds);
+
+    Pair<byte[], String> updatePosterOfAds(Integer adsId, MultipartFile image) throws IOException;
 }
 

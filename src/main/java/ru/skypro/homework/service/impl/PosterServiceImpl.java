@@ -76,7 +76,7 @@ public class PosterServiceImpl implements PosterService {
             throw new IllegalArgumentException();
         }
         try {
-            log.info("Читаем байты по адресу: {}", posterEntity.getPath());
+            log.debug("Читаем байты по адресу: {}", posterEntity.getPath());
             return Pair.of(Files.readAllBytes(Paths.get(posterEntity.getPath())), MediaType.IMAGE_JPEG_VALUE);
         } catch (IOException ignored) {
             log.error("Отсутствует файл постера с ID: {}", posterEntity.getId());
@@ -98,16 +98,30 @@ public class PosterServiceImpl implements PosterService {
         byte[] data = file.getBytes();
         Path path = generatePath(file, filename);
         Files.write(path, data);
-        PosterEntity poster = new PosterEntity();
-        poster.setPath(path.toString());
-        poster.setId(null);
-        PosterEntity newPoster = posterRepository.save(poster);
+        PosterEntity newPoster = posterRepository.save(new PosterEntity(path.toString()));
         log.info("Постер с ID: {} добавлен", newPoster.getId());
         return newPoster;
     }
 
+    @Override
+    public PosterEntity updatePoster(PosterEntity poster, MultipartFile file, String filename) {
+        Path oldPath = Paths.get(poster.getPath());
+        Path newPath = generatePath(file, filename);
+        try {
+            Files.write(newPath, file.getBytes());
+            if (Files.exists(newPath)) {
+                poster.setPath(newPath.toString());
+                poster = posterRepository.save(poster);
+                Files.deleteIfExists(oldPath);
+            }
+        } catch (IOException ignored) {
+            throw new PosterNotFoundException();
+        }
+        return poster;
+    }
+
     /**
-     * Метод генерирует путь (path)
+     * Метод генерирует путь к постеру (path)
      *
      * @param file - файл изображения
      * @param filename - имя файла     
@@ -128,5 +142,23 @@ public class PosterServiceImpl implements PosterService {
             path = filename + "_" + count++ + extension;
         } while (Files.exists(resultingPath.resolve(path)));
         return resultingPath.resolve(path);
+    }
+
+
+    /**
+     * Метод удаления постера и файла с изображением
+     *
+     * @param posterEntity - постер к удалению
+     */
+    @Override
+    public void deletePoster(PosterEntity posterEntity) {
+        Path path = Path.of(posterEntity.getPath());
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException ignored) {
+            log.error("Ошибка удаления постера");
+        }
+        posterRepository.delete(posterEntity);
+        posterRepository.findById(posterEntity.getId());
     }
 }

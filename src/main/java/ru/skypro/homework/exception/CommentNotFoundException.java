@@ -1,13 +1,11 @@
 package ru.skypro.homework.exception;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class CommentNotFoundException extends RuntimeException{
-    private final int commentId;
-
-    public CommentNotFoundException(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public int getCommentIdId() {
-        return commentId;
+    public CommentNotFoundException (Integer id) {
+        super("Комментарий с id: " + id + " не найден.");
     }
 }

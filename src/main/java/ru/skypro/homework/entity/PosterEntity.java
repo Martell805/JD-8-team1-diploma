@@ -1,9 +1,7 @@
 package ru.skypro.homework.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,4 +20,8 @@ public class PosterEntity {
     private AdsEntity ads;
 
     private String path;
+
+    public PosterEntity(String path) {
+        this.path = path;
+    }
 }

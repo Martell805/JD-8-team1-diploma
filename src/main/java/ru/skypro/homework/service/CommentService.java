@@ -53,4 +53,6 @@ public interface CommentService {
      * @return Список всех комментариев.
      */
     ResponseWrapperComment getAllCommentsByAd(Integer id);
+
+    void removeAllCommentsOfAds(Integer id);
 }

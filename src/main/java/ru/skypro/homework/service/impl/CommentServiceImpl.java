@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.Comment;
@@ -19,7 +20,7 @@ import ru.skypro.homework.service.CommentService;
 import java.time.LocalDate;
 import java.util.List;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -78,6 +79,18 @@ public class CommentServiceImpl implements CommentService {
         findComments.setCount(comments.size());
         return findComments;
     }
+
+    /**
+     * Метод удаляет все комментарии к объявлению по его ID, используя nativeQuery
+     *
+     * @param id - ID объявления
+     */
+    @Override
+    public void removeAllCommentsOfAds(Integer id) {
+        commentRepository.deleteAllByAdsId(id);
+        log.info("Удалили все комментарии к объявлению с ID: {}", id);
+    }
+
     private CommentEntity findComment(Integer adId, Integer commentId) {
         return commentRepository.findByAds_IdAndId(adId, commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
