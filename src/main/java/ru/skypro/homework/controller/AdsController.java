@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -120,10 +121,10 @@ public class AdsController {
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
     @RolesAllowed({"USER"})
-    public ResponseEntity<Comment> deleteComment(@PathVariable Integer adId,
+    public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
         commentService.deleteComment(adId, commentId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "getComment")
@@ -155,7 +156,7 @@ public class AdsController {
                                                   @PathVariable Integer commentId,
                                                   @RequestBody Comment comment,
                                                   Authentication authentication) {
-        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication));
+        return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication.getName()));
     }
 
     @Operation(summary = "removeAds")

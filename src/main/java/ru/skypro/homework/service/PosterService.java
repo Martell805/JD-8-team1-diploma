@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public interface PosterService {
-    Pair<byte[], String> getPosterData(PosterEntity posterEntity);
 
     PosterEntity addPoster(MultipartFile file, String nameFile) throws IOException;
 
+    Pair<byte[], String> getPosterData(PosterEntity posterEntity);
+
     PosterEntity updatePoster(PosterEntity poster, MultipartFile file, String nameFile);
 
-    Path generatePath(MultipartFile file, String nameFile);
-
     void deletePoster(PosterEntity image);
+
+    Path generatePath(MultipartFile file, String nameFile);
 }

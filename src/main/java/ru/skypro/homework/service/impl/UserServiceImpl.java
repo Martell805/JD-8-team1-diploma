@@ -13,6 +13,7 @@ import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.Authority;
 import ru.skypro.homework.entity.UserEntity;
+import ru.skypro.homework.exception.AvatarNotFoundException;
 import ru.skypro.homework.exception.UserNotFoundException;
 import ru.skypro.homework.mapping.UserMapper;
 import ru.skypro.homework.repository.UserRepository;
@@ -49,15 +50,40 @@ public class UserServiceImpl implements UserService {
 
     public UserEntity getUserByEmail(String email) {
         return usersRepository.findByEmail(email).orElseThrow(() -> {
-            log.error("Не найден пользователь: {}", email);
+            log.error("getUserByEmail: Не найден пользователь: {}", email);
             return new UserNotFoundException(email);
         });
     }
 
+    @Override
+    public Pair<byte[], String> getAvatarMe(String email) {
+        return getAvatarDataOfUser(getUserByEmail(email));
+    }
+
+    @Override
+    public Pair<byte[], String> getAvatarOfUser(Integer userId) {
+        UserEntity userEntity = usersRepository.findById(userId).orElseThrow(() -> {
+            log.error("getAvatar: Пользователь с ID {} не найден", userId);
+            return new UserNotFoundException("Пользователь с ID " + userId + " не найден");
+        });
+        return getAvatarDataOfUser(userEntity);
+    }
+
+    @Override
+    public Pair<byte[], String> getAvatarDataOfUser(UserEntity userEntity) {
+        if (userEntity.getAvatar() == null) {
+            log.error("Исключение! Аватар пользователя c ID " + userEntity.getId() + " = null");
+            throw new AvatarNotFoundException();
+        }
+        return avatarService.getAvatarData(userEntity.getAvatar());
+    }
+
+    @Override
     public NewPassword setPassword(NewPassword password) {
         return null;
     }
 
+    @Override
     public User updateUser(String email, User user) {
         UserEntity userEntity = userMapper.userDtoToEntity(user);
         UserEntity newUser = getUserByEmail(email);
@@ -78,6 +104,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.userEntityToDto(newUser);
     }
 
+    @Override
     public ResponseEntity<Void> updateUserAvatar(String email, MultipartFile image) throws IOException {
         UserEntity userEntity = getUserByEmail(email);
         updateAvatarOfUserEntity(userEntity, image);
@@ -93,10 +120,10 @@ public class UserServiceImpl implements UserService {
 
     private void updateAvatarOfUserEntity(UserEntity userEntity, MultipartFile image) throws IOException {
         if (userEntity.getAvatar() == null) {
-            //user.setAvatar(avatarService.);
+            userEntity.setAvatar(avatarService.addAvatar(image, "user" + userEntity.getId() + "_avatar"));
             log.info("Добавляем аватар пользователю (id: {})", userEntity.getId());
         } else {
-            //user.setAvatar(avatarService.);
+            userEntity.setAvatar(avatarService.updateAvatar(userEntity.getAvatar(), image, "user" + userEntity.getId() + "_avatar"));
             log.info("Обновили аватар (id: {}) пользователю (id: {})", userEntity.getAvatar().getId(), userEntity.getId());
         }
     }
