@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         if (isLoggedIn) {
             log.info("Пользователь успешно вошел - {}", userName);
         } else {
-            log.warn("Ошибка входа. Не верный пароль пользователя {} ", userName);
+            log.warn("Ошибка входа. Неверный пароль пользователя {} ", userName);
         }
         return isLoggedIn;
     }
