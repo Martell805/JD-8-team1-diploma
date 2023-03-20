@@ -1,6 +1,7 @@
 package ru.skypro.homework.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -40,9 +41,11 @@ public class UserEntity {
     private boolean enabled;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<AdsEntity> adsList;
 
     @OneToMany(mappedBy = "author")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<CommentEntity> commentEntities;
 
     @Override

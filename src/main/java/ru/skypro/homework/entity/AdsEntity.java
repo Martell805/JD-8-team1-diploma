@@ -2,6 +2,7 @@ package ru.skypro.homework.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -33,13 +34,14 @@ public class AdsEntity {
     @NotNull
     private String description;
 
-    @ManyToOne
+    @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     @NotNull
     private UserEntity author;
     @OneToMany(mappedBy = "ads")
     @ToString.Exclude
-    private List<CommentEntity> results; // присоединение comment
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<CommentEntity> results;
 
     @Override
     public boolean equals(Object o) {
