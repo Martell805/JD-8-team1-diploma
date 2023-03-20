@@ -59,3 +59,7 @@ CREATE TABLE authorities
     username  varchar(30) NOT NULL UNIQUE,
     authority varchar(30) NOT NULL
 );
+
+-- changeSet andrew:3
+ALTER TABLE comments
+    ALTER COLUMN created_at TYPE TIMESTAMP USING created_at::TIMESTAMP;

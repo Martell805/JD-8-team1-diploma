@@ -15,13 +15,13 @@ public interface  CommentMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "author.id", source = "author")
     @Mapping(target = "text", source = "text")
-    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm")
      CommentEntity commentDtoToEntity(Comment comment);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "author", source = "author.id")
     @Mapping(target = "text", source = "text")
-    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd HH:mm")
      Comment commentEntityToDto(CommentEntity commentEntity);
 
     List<CommentEntity> dtoToModel(List<Comment> comments);
