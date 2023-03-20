@@ -16,7 +16,7 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new UserNotFoundException(authentication.getName())));
         newComment.setAds(adsRepository.findById(id)
                 .orElseThrow(() -> new AdsNotFoundException(id)));
-        newComment.setCreatedAt(LocalDate.now());
+        newComment.setCreatedAt(LocalDateTime.now());
 
         return commentMapper.commentEntityToDto(commentRepository.save(newComment));
     }
@@ -52,9 +52,8 @@ public class CommentServiceImpl implements CommentService {
 
         if (findComment.getAuthor().getId().equals(findUser.getId())) {
             findComment.setText(comment.getText());
-            findComment.setCreatedAt(LocalDate.now());
+            findComment.setCreatedAt(LocalDateTime.now());
             return commentMapper.commentEntityToDto(commentRepository.save(findComment));
-
         } else {
             throw new UserForbiddenException(findUser.getId());
         }

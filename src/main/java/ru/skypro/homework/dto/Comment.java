@@ -1,13 +1,19 @@
 package ru.skypro.homework.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 @Data
-public class Comment { // оставить
+public class Comment {
+    @JsonProperty("author")
     private Integer author;
+    @JsonProperty("pk")
     private Integer id;
+    @JsonProperty("text")
+    @NotNull
     private String text;
-    private Date createdAt;
+    @JsonProperty("createdAt")
+    private String createdAt;
 }
