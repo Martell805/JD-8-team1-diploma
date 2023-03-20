@@ -1,7 +1,6 @@
 package ru.skypro.homework.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Entity
 @Table(name = "Authorities")
 @Validated

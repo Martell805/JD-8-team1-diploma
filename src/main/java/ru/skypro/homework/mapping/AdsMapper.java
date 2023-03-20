@@ -10,13 +10,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AdsMapper {
-/*    @Mapping(target = "id", source = "dto.id")
-    @Mapping(target = "imageId", source = "dto.imageId")
-    @Mapping(target = "author.id", source = "dto.author")
-    @Mapping(target = "price", source = "dto.price")
-    @Mapping(target = "title", source = "dto.title")
-    public abstract AdsEntity toModel(Ads dto);*/
-
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "title", source = "entity.title")
     @Mapping(target = "imageId", source = "entity")
