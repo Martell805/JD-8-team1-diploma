@@ -30,7 +30,7 @@ public interface UserService {
      * @param username - логин пользователя
      * @return User - DTO
      */
-    User getUsers(String username);
+    User getUser(String username);
 
     /**
      * Метод получения Entity пользователя
