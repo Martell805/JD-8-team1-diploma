@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         return Pair.of(userEntity, authority);
     }
 
-    public User getUsers(String email) {
+    public User getUser(String email) {
         return userMapper.userEntityToDto(getUserByEmail(email));
     }
 

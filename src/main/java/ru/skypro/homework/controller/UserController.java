@@ -62,7 +62,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "me", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<User> getUser(Authentication authentication) {
-        return ResponseEntity.ok(userService.getUsers(authentication.getName()));
+        return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
 
 

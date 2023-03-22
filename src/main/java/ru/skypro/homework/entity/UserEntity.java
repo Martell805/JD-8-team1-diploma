@@ -2,6 +2,7 @@ package ru.skypro.homework.entity;
 
 import lombok.*;
 import org.hibernate.annotations.Cascade;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,7 +14,9 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 @Table(name = "users")
+@Validated
 public class UserEntity {
 
     @Id
@@ -42,10 +45,12 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ToString.Exclude
     private List<AdsEntity> adsList;
 
     @OneToMany(mappedBy = "author")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @ToString.Exclude
     private List<CommentEntity> commentEntities;
 
     @Override
