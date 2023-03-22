@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
@@ -59,7 +60,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Ads> addAds(@RequestPart(value = "properties") CreateAds properties,
                                       @RequestPart(value = "image") MultipartFile image, Authentication authentication) throws IOException {
         return ResponseEntity.ok(adsService.addAds(properties, image, authentication.getName()));
@@ -74,7 +75,7 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
     @GetMapping("/me")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<ResponseWrapperAds> getAllMeAds(Authentication authentication) {
         return ResponseEntity.ok(adsService.getAdsMe(authentication.getName()));
     }
@@ -87,7 +88,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{id}/comments")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getAllCommentsByAd(id));
     }
@@ -103,7 +104,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping("/{id}/comments")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody Comment comments,
                                               Authentication authentication) {
@@ -120,7 +121,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                                  @PathVariable Integer commentId) {
         commentService.deleteComment(adId, commentId);
@@ -135,7 +136,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
         return ResponseEntity.ok(commentService.getComment(adId, commentId));
@@ -151,7 +152,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PatchMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> updateComments(@PathVariable Integer adId,
                                                   @PathVariable Integer commentId,
                                                   @RequestBody Comment comment,
@@ -169,7 +170,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{id}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Void> removeAds(@PathVariable Integer id) {
         return adsService.deleteAds(id);
     }
@@ -183,7 +184,7 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @GetMapping("/{id}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
         return ResponseEntity.ok(adsService.getFullAds(id));
     }
@@ -199,7 +200,7 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found"),
     })
     @PatchMapping("/{id}")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Ads> updateAds(@PathVariable Integer id,
                                          @RequestBody CreateAds createAds) {
         return ResponseEntity.ok(adsService.updateAds(id, createAds));
@@ -214,7 +215,7 @@ public class AdsController {
     @PatchMapping(value = "{id}/image",
                     produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE},
                     consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> updatePoster(@PathVariable("id") Integer adsId,
                                               @RequestPart MultipartFile image) throws IOException {
         Pair<byte[], String> pair = adsService.updatePosterOfAds(adsId, image);
@@ -231,7 +232,7 @@ public class AdsController {
                     array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "{adsId}/image", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
-    @RolesAllowed({"USER"})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> getPoster(
             @Parameter(in = ParameterIn.PATH, description = "ID объявления")
             @PathVariable("adsId") Integer idAds) {
