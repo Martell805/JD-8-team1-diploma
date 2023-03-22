@@ -86,6 +86,7 @@ public class AuthServiceImpl implements AuthService {
         String encryptedPassword = userDetails.getPassword();
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(PASSWORD_PREFIX.length());
         boolean isChanged = encoder.matches(body.getNewPassword(), encryptedPasswordWithoutEncryptionType);
+        userService.updatePassword(userDetails.getUsername(), encryptedPassword);
         if (isChanged) {
             log.info("Изменен пароль пользователя {}.", userDetails.getUsername());
         } else {

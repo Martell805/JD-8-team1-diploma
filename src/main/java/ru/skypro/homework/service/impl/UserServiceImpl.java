@@ -99,6 +99,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updatePassword(String email, String password) {
+        UserEntity userEntity = getUserByEmail(email);
+        userEntity.setPassword(password);
+        userEntity = usersRepository.save(userEntity);
+
+        return userMapper.userEntityToDto(userEntity);
+    }
+
+    @Override
     public ResponseEntity<Void> updateUserAvatar(String email, MultipartFile image) throws IOException {
         UserEntity userEntity = getUserByEmail(email);
         updateAvatarOfUserEntity(userEntity, image);
