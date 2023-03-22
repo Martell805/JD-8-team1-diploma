@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.User;
@@ -76,11 +75,6 @@ public class UserServiceImpl implements UserService {
             throw new AvatarNotFoundException();
         }
         return avatarService.getAvatarData(userEntity.getAvatar());
-    }
-
-    @Override
-    public NewPassword setPassword(NewPassword password) {
-        return null;
     }
 
     @Override

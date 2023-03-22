@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UserService;
 
@@ -37,21 +36,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "setPassword", description = "Установка пароля")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = NewPassword.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "403", description = "Forbidden"),
-            @ApiResponse(responseCode = "404", description = "Not Found")})
-    @PostMapping(value = "set_password",
-            produces = {MediaType.APPLICATION_JSON_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<NewPassword> setPassword(NewPassword body) {
-        return ResponseEntity.ok(userService.setPassword(body));
-    }
-
     @Operation(summary = "getUser", description = "Получение пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(
@@ -64,7 +48,6 @@ public class UserController {
     public ResponseEntity<User> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
-
 
     @Operation(
             summary = "getAvatarOfMe", description = "Получение аватара авторизованного пользователя")

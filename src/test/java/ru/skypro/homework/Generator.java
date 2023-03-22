@@ -3,6 +3,7 @@ package ru.skypro.homework;
 import com.github.javafaker.Faker;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.entity.*;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public class Generator {
         userEntity.setRegDate(regDate);
         userEntity.setAvatar(avatarEntity);
         userEntity.setPassword(password);
+        userEntity.setEnabled(true);
 
         return userEntity;
     }
@@ -130,6 +132,31 @@ public class Generator {
                 .current()
                 .nextLong(startEpochDay, endEpochDay);
         return LocalDate.ofEpochDay(randomDay);
+    }
+
+    public Authority genAuthority(UserEntity userEntity, Role role) {
+        Authority authority = new Authority();
+        if (userEntity == null || userEntity.getUsername() == null) {
+            authority.setUsername(faker.name().username());
+        } else {
+            authority.setUsername(userEntity.getUsername());
+        }
+        if (role == null) {
+            authority.setAuthority(genRoleIfEmpty(null).toString());
+        } else {
+            authority.setAuthority(role.getRole());
+        }
+        authority.setAuthority(authority.getAuthority());
+        authority.setId(generateIdIfEmpty(null));
+        return authority;
+    }
+
+    public Role genRoleIfEmpty(Role role) {
+        if (role == null) {
+            Role[] roleList = Role.values();
+            return roleList[random.nextInt(roleList.length)];
+        }
+        return role;
     }
 
     public String generatePhoneIfEmpty(String phone) {
