@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.User;
@@ -79,11 +78,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public NewPassword setPassword(NewPassword password) {
-        return null;
-    }
-
-    @Override
     public User updateUser(String email, User user) {
         UserEntity userEntity = userMapper.userDtoToEntity(user);
         UserEntity newUser = getUserByEmail(email);
@@ -102,6 +96,15 @@ public class UserServiceImpl implements UserService {
         newUser = usersRepository.save(newUser);
         log.info("Пользователь обновлен (id: {})", newUser.getId());
         return userMapper.userEntityToDto(newUser);
+    }
+
+    @Override
+    public User updatePassword(String email, String password) {
+        UserEntity userEntity = getUserByEmail(email);
+        userEntity.setPassword(password);
+        userEntity = usersRepository.save(userEntity);
+
+        return userMapper.userEntityToDto(userEntity);
     }
 
     @Override

@@ -43,22 +43,24 @@ public class UserEntity {
     @Column(name = "enabled")
     private boolean enabled;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+/*    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @ToString.Exclude
-    private List<AdsEntity> adsList;
+    private List<AdsEntity> adsList;*/
 
+/*
     @OneToMany(mappedBy = "author")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @ToString.Exclude
     private List<CommentEntity> commentEntities;
+*/
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserEntity)) return false;
         UserEntity that = (UserEntity) o;
-        return enabled == that.enabled && Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && Objects.equals(regDate, that.regDate) && Objects.equals(avatar, that.avatar) && Objects.equals(password, that.password) && Objects.equals(username, that.username) && Objects.equals(adsList, that.adsList) && Objects.equals(commentEntities, that.commentEntities);
+        return enabled == that.enabled && Objects.equals(id, that.id) && Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && Objects.equals(regDate, that.regDate) && Objects.equals(avatar, that.avatar) && Objects.equals(password, that.password) && Objects.equals(username, that.username);
     }
 
     @Override
