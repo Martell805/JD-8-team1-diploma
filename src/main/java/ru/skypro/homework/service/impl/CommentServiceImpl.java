@@ -49,6 +49,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public CommentEntity getCommentEntityById(Integer id) {
+        return commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException(id));
+    }
+
+    @Override
     public ResponseWrapperComment getAllCommentsByAd(Integer id) {
         List<CommentEntity> comments = commentRepository.findAllByAds_Id(id);
         ResponseWrapperComment findComments = new ResponseWrapperComment();

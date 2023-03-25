@@ -3,6 +3,7 @@ package ru.skypro.homework.service;
 import org.springframework.security.core.Authentication;
 import ru.skypro.homework.dto.Comment;
 import ru.skypro.homework.dto.ResponseWrapperComment;
+import ru.skypro.homework.entity.CommentEntity;
 import ru.skypro.homework.exception.AdsNotFoundException;
 import ru.skypro.homework.exception.CommentNotFoundException;
 
@@ -37,6 +38,16 @@ public interface CommentService {
      * @throws CommentNotFoundException - не найден комментарий
      */
     Comment getComment(Integer adId, Integer commentId);
+
+    /**
+     * Получения сущьности комментария по id.
+     *
+     * @param id - id комментария;
+     * @return Найденый комментарий;
+     * @throws CommentNotFoundException - не найден комментарий
+     */
+    CommentEntity getCommentEntityById(Integer id);
+
     /**
      * Удаление комментария по id.
      *

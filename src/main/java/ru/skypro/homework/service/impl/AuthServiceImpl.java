@@ -38,9 +38,8 @@ public class AuthServiceImpl implements AuthService {
         }
         UserDetails userDetails = manager.loadUserByUsername(userName);
         String encryptedPassword = userDetails.getPassword();
-        log.debug("pass: {}", encryptedPassword);
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
-        log.debug("pass: {}", encryptedPasswordWithoutEncryptionType);
+
         boolean isLoggedIn = encoder.matches(password, encryptedPasswordWithoutEncryptionType);
         if (isLoggedIn) {
             log.info("Пользователь успешно вошел - {}", userName);

@@ -7,6 +7,7 @@ import ru.skypro.homework.dto.Ads;
 import ru.skypro.homework.dto.CreateAds;
 import ru.skypro.homework.dto.FullAds;
 import ru.skypro.homework.dto.ResponseWrapperAds;
+import ru.skypro.homework.entity.AdsEntity;
 import ru.skypro.homework.exception.AdsNotFoundException;
 
 import java.io.IOException;
@@ -66,6 +67,14 @@ public interface AdsService {
      * @return
      */
     ResponseWrapperAds getAdsMe(String username);
+
+    /**
+     * Возвращает сущьность объявления по id
+     *
+     * @param id
+     * @return
+     */
+    AdsEntity getAds(Integer id);
 
     Pair<byte[], String> getPoster(Integer idAds);
 

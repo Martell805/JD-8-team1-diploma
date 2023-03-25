@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
@@ -20,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UserService;
+import ru.skypro.homework.service.VerificationUserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -28,14 +31,12 @@ import java.io.IOException;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @Validated
+@RequiredArgsConstructor
 @RequestMapping(value = "users")
 @Tag(name = "Пользователи")
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final VerificationUserService verificationUserService;
 
     @Operation(summary = "setPassword", description = "Установка пароля")
     @ApiResponses(value = {
@@ -48,6 +49,7 @@ public class UserController {
     @PostMapping(value = "set_password",
             produces = {MediaType.APPLICATION_JSON_VALUE},
             consumes = {MediaType.APPLICATION_JSON_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<NewPassword> setPassword(NewPassword body) {
         return ResponseEntity.ok(userService.setPassword(body));
     }
@@ -61,10 +63,10 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "me", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<User> getUser(Authentication authentication) {
         return ResponseEntity.ok(userService.getUser(authentication.getName()));
     }
-
 
     @Operation(
             summary = "getAvatarOfMe", description = "Получение аватара авторизованного пользователя")
@@ -75,6 +77,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "me/image",
             produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> getAvatar(Authentication authentication) {
         Pair<byte[], String> pair = userService.getAvatarMe(authentication.getName());
         return read(pair);
@@ -89,9 +92,16 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "{userId}/image",
             produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> getAvatarOfUser(
             @Parameter(description = "id of user for process")
-            @PathVariable Integer userId) {
+            @PathVariable Integer userId,
+            Authentication authentication) {
+
+        if(!verificationUserService.verifySameUserOrAdmin(userId, authentication)){
+            return ResponseEntity.badRequest().build();
+        }
+
         Pair<byte[], String> pair = userService.getAvatarOfUser(userId);
         return read(pair);
     }
@@ -106,8 +116,14 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PatchMapping(value = "me", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<User> updateUser(Authentication authentication,
             @Parameter(in = ParameterIn.DEFAULT, required = true, schema = @Schema()) @Valid @RequestBody User body) {
+
+        if(!verificationUserService.verifySameUserOrAdmin(body.getId(), authentication)){
+            return ResponseEntity.badRequest().build();
+        }
+
         return ResponseEntity.ok(userService.updateUser(authentication.getName(), body));
     }
 
@@ -116,6 +132,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PatchMapping(value = "/me/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Void> updateUserAvatar(Authentication authentication, MultipartFile image) throws IOException {
         return userService.updateUserAvatar(authentication.getName(), image);
     }
