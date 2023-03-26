@@ -120,6 +120,11 @@ public class AdsServiceImpl implements AdsService {
         return responseWrapperAds;
     }
 
+    @Override
+    public AdsEntity getAds(Integer id) {
+        return adsRepository.findById(id).orElseThrow(() -> new AdsNotFoundException(id));
+    }
+
     /**
      * Метод получает постер для объявления по его ID
      *
