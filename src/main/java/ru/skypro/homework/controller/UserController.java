@@ -18,7 +18,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.VerificationUserService;
@@ -37,7 +36,7 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
     private final VerificationUserService verificationUserService;
-
+    
     @Operation(summary = "setPassword", description = "Установка пароля")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(

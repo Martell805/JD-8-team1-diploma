@@ -3,7 +3,6 @@ package ru.skypro.homework.service;
 import org.springframework.data.util.Pair;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.RegisterReq;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.entity.Authority;
@@ -17,20 +16,12 @@ public interface UserService {
     Pair<byte[], String> getAvatarDataOfUser(UserEntity userEntity);
 
     /**
-     * Метод установки пароля
-     *
-     * @param password - новый пароль
-     * @return возвращает установленный пароль
-     */
-    NewPassword setPassword(NewPassword password);
-
-    /**
      * Метод получения DTO пользователя
      *
-     * @param username - логин пользователя
+     * @param email - логин пользователя
      * @return User - DTO
      */
-    User getUser(String username);
+    User getUser(String email);
 
     /**
      * Метод получения Entity пользователя
@@ -65,7 +56,19 @@ public interface UserService {
     User updateUser(String username, User user);
 
     /**
-     * Метод обновления изображения пользователя
+     * Метод изменения пароля пользователя
+     *
+     * @param email - логин пользователя на изменение
+     * @param password - новый пароль
+     * @return возвращает обновленного пользователя
      */
-    ResponseEntity<Void> updateUserAvatar(String username, MultipartFile image) throws IOException;
+    User updatePassword(String email, String password);
+
+    /**
+     * Метод обновления изображения пользователя
+     *
+     * @param email - логин пользователя на изменение
+     * @param image - новый аватар
+     */
+    ResponseEntity<Void> updateUserAvatar(String email, MultipartFile image) throws IOException;
 }
