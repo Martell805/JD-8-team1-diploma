@@ -57,7 +57,7 @@ public class VerificationUserServiceImpl implements VerificationUserService {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         SimpleGrantedAuthority authority = (SimpleGrantedAuthority) authorities.toArray()[0];
 
-        return ((SimpleGrantedAuthority) authorities.toArray()[0]).getAuthority().equals("ADMIN");
+        return authority.getAuthority().equals("ADMIN");
     }
 
     @Override
