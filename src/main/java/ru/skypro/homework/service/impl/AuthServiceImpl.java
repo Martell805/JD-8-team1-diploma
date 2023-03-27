@@ -40,7 +40,6 @@ public class AuthServiceImpl implements AuthService {
         }
         UserDetails userDetails = manager.loadUserByUsername(userName);
         String encryptedPassword = userDetails.getPassword();
-        String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(8);
 
         log.debug("pass: {}", encryptedPassword);
         String encryptedPasswordWithoutEncryptionType = encryptedPassword.substring(PASSWORD_PREFIX.length());
