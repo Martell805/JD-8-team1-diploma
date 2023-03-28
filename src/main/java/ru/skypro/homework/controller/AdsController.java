@@ -24,7 +24,6 @@ import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.VerificationUserService;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 
 @Slf4j
@@ -61,7 +60,6 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Ads> addAds(@RequestPart(value = "properties") CreateAds properties,
                                       @RequestPart(value = "image") MultipartFile image, Authentication authentication) throws IOException {
         return ResponseEntity.ok(adsService.addAds(properties, image, authentication.getName()));
@@ -76,7 +74,6 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
     })
     @GetMapping("/me")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<ResponseWrapperAds> getAllMeAds(Authentication authentication) {
         return ResponseEntity.ok(adsService.getAdsMe(authentication.getName()));
     }
@@ -89,7 +86,6 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{id}/comments")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<ResponseWrapperComment> getComment(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getAllCommentsByAd(id));
     }
@@ -105,7 +101,6 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PostMapping("/{id}/comments")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                               @RequestBody Comment comments,
                                               Authentication authentication) {
@@ -122,13 +117,12 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Void> deleteComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId,
                                               Authentication authentication) {
 
         if(!verificationUserService.verifyUsersCommentOrAdmin(commentId, authentication)){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         commentService.deleteComment(adId, commentId);
@@ -143,7 +137,6 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> getComment(@PathVariable Integer adId,
                                               @PathVariable Integer commentId) {
         return ResponseEntity.ok(commentService.getComment(adId, commentId));
@@ -159,14 +152,13 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @PatchMapping("/{adId}/comments/{commentId}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Comment> updateComments(@PathVariable Integer adId,
                                                   @PathVariable Integer commentId,
                                                   @RequestBody Comment comment,
                                                   Authentication authentication) {
 
         if(!verificationUserService.verifyUsersCommentOrAdmin(commentId, authentication)){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return ResponseEntity.ok(commentService.updateComment(adId, commentId, comment, authentication.getName()));
@@ -182,12 +174,11 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @DeleteMapping("/{id}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Void> removeAds(@PathVariable Integer id,
                                           Authentication authentication) {
 
         if(!verificationUserService.verifyUsersAdsOrAdmin(id, authentication)){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return adsService.deleteAds(id);
@@ -202,7 +193,6 @@ public class AdsController {
             @ApiResponse(responseCode = "403", description = "Forbidden")
     })
     @GetMapping("/{id}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<FullAds> getFullAd(@PathVariable Integer id) {
         return ResponseEntity.ok(adsService.getFullAds(id));
     }
@@ -218,13 +208,12 @@ public class AdsController {
             @ApiResponse(responseCode = "404", description = "Not Found"),
     })
     @PatchMapping("/{id}")
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<Ads> updateAds(@PathVariable Integer id,
                                          @RequestBody CreateAds createAds,
                                          Authentication authentication) {
 
         if(!verificationUserService.verifyUsersAdsOrAdmin(id, authentication)){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return ResponseEntity.ok(adsService.updateAds(id, createAds));
@@ -239,13 +228,12 @@ public class AdsController {
     @PatchMapping(value = "{id}/image",
                     produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE},
                     consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> updatePoster(@PathVariable("id") Integer adsId,
                                               @RequestPart MultipartFile image,
                                                Authentication authentication) throws IOException {
 
         if(!verificationUserService.verifyUsersAdsOrAdmin(adsId, authentication)){
-            return ResponseEntity.badRequest().build();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         Pair<byte[], String> pair = adsService.updatePosterOfAds(adsId, image);
@@ -262,7 +250,6 @@ public class AdsController {
                     array = @ArraySchema(schema = @Schema(implementation = byte[].class)))),
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @GetMapping(value = "{adsId}/image", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
-    @RolesAllowed({"USER", "ADMIN"})
     public ResponseEntity<byte[]> getPoster(
             @Parameter(in = ParameterIn.PATH, description = "ID объявления")
             @PathVariable("adsId") Integer idAds) {
