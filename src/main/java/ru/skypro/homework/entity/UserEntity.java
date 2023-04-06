@@ -1,12 +1,10 @@
 package ru.skypro.homework.entity;
 
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -42,18 +40,6 @@ public class UserEntity {
     private String username;
     @Column(name = "enabled")
     private boolean enabled;
-
-/*    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @ToString.Exclude
-    private List<AdsEntity> adsList;*/
-
-/*
-    @OneToMany(mappedBy = "author")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    @ToString.Exclude
-    private List<CommentEntity> commentEntities;
-*/
 
     @Override
     public boolean equals(Object o) {

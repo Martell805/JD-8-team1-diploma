@@ -51,16 +51,6 @@ public class WebSecurityConfig {
         return new JdbcUserDetailsManager(dataSource());
     }
 
-/*   @Bean
-    public InMemoryUserDetailsManager userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user@gmail.com")
-                .password("password")
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }*/
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

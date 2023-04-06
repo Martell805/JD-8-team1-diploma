@@ -9,6 +9,10 @@ import javax.validation.constraints.NotNull;
 public class Comment {
     @JsonProperty("author")
     private Integer author;
+    @JsonProperty("authorImage")
+    private String authorAvatar;
+    @JsonProperty("authorFirstName")
+    private String authorFirstName;
     @JsonProperty("pk")
     private Integer id;
     @JsonProperty("text")

@@ -17,6 +17,7 @@ import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.CommentService;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,11 +56,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseWrapperComment getAllCommentsByAd(Integer id) {
-        List<CommentEntity> comments = commentRepository.findAllByAds_Id(id);
-        ResponseWrapperComment findComments = new ResponseWrapperComment();
-        findComments.setResults(commentMapper.modelToDto(comments));
-        findComments.setCount(comments.size());
-        return findComments;
+        List<Comment> comments = commentMapper.modelToDtoList(
+                commentRepository.findAllByAds_Id(id)
+        );
+        return commentMapper.mapToResponseWrapperComments(comments, comments.size());
     }
 
     @Override

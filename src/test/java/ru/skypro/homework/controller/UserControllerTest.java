@@ -30,6 +30,7 @@ import ru.skypro.homework.mapping.UserMapperImpl;
 import ru.skypro.homework.repository.AuthorityRepository;
 import ru.skypro.homework.repository.AvatarRepository;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.VerificationUserService;
 import ru.skypro.homework.service.impl.AuthorityServiceImpl;
 import ru.skypro.homework.service.impl.AvatarServiceImpl;
 import ru.skypro.homework.service.impl.UserServiceImpl;
@@ -64,6 +65,8 @@ class UserControllerTest {
     @SpyBean
     private UserMapperImpl userMapper;
     @MockBean
+    private VerificationUserService verificationUserService;
+    @MockBean
     private AvatarRepository avatarRepository;
     @SpyBean
     private AvatarServiceImpl avatarService;
@@ -96,6 +99,7 @@ class UserControllerTest {
         assertThat(usersRepository).isNotNull();
         assertThat(userService).isNotNull();
         assertThat(userMapper).isNotNull();
+        assertThat(verificationUserService).isNotNull();
         assertThat(avatarRepository).isNotNull();
         assertThat(avatarService).isNotNull();
         assertThat(authorityRepository).isNotNull();
@@ -168,7 +172,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("200 PATCH http://localhost:8080/users/me")
+    @DisplayName("403 PATCH http://localhost:8080/users/me")
     @WithMockUser(username = emailForTest, authorities = {"USER"})
     void updateUserTest() throws Exception {
         UserEntity oldUser = generator.genUser(null, null);
@@ -178,7 +182,6 @@ class UserControllerTest {
         newUser.setFirstName("updatedUser");
 
         User oldUserDto = userMapper.userEntityToDto(oldUser);
-        User newUserDto = userMapper.userEntityToDto(newUser);
 
         when(usersRepository.findByEmail(emailForTest)).thenReturn(Optional.of(oldUser));
         when(usersRepository.save(any(UserEntity.class))).thenReturn(newUser);
@@ -192,13 +195,12 @@ class UserControllerTest {
                         .with(csrf());
 
         mockMvc.perform(builder)
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectWriter.writeValueAsString(newUserDto)));
+                .andExpect(status().isForbidden());
         verify(usersRepository, times(1)).save(newUser);
     }
 
     @Test
-    @DisplayName("404 PATCH http://localhost:8080/users/me")
+    @DisplayName("403 PATCH http://localhost:8080/users/me")
     @WithMockUser(username = emailForTest, authorities = {"USER"})
     void updateUserNegativeTest() throws Exception {
         UserEntity user = generator.genUser(null, null);
@@ -212,7 +214,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .with(csrf());
         mockMvc.perform(builder)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isForbidden());
     }
 
     @Test
