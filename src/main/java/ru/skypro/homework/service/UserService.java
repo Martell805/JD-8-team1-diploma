@@ -11,8 +11,21 @@ import ru.skypro.homework.entity.UserEntity;
 import java.io.IOException;
 
 public interface UserService {
+
+    /**
+     * Метод создает/регистрирует нового пользователя
+     *
+     * @param registerReq - авторизация
+     * @param password - пароль
+     * @return зарегистрированный пользователь
+     */
     Pair<UserEntity, Authority> addUser(RegisterReq registerReq, String password);
 
+    /**
+     * Метод получения аватара
+     *
+     * @param userEntity - пользователь
+     */
     Pair<byte[], String> getAvatarDataOfUser(UserEntity userEntity);
 
     /**

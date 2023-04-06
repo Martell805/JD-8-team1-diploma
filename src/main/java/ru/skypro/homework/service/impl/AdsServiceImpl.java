@@ -125,12 +125,6 @@ public class AdsServiceImpl implements AdsService {
         return adsRepository.findById(id).orElseThrow(() -> new AdsNotFoundException(id));
     }
 
-    /**
-     * Метод получает постер для объявления по его ID
-     *
-     * @param adsId ID объявления
-     * @return poster
-     */
     @Override
     public Pair<byte[], String> getPoster(Integer adsId) {
         AdsEntity ads = adsRepository.findById(adsId).orElseThrow(() -> {

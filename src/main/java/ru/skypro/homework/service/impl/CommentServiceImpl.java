@@ -85,11 +85,7 @@ public class CommentServiceImpl implements CommentService {
         log.info("Удаление: Комментарий с ID {} удален", commentId);
     }
 
-    /**
-     * Метод удаляет все комментарии к объявлению по его ID, используя nativeQuery
-     *
-     * @param id - ID объявления
-     */
+
     @Override
     public void removeAllCommentsOfAds(Integer id) {
         commentRepository.deleteAllByAdsId(id);

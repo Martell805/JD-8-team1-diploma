@@ -29,14 +29,6 @@ public class PosterServiceImpl implements PosterService {
         this.postersDir = postersDir;
         this.posterRepository = posterRepository;
     }
-
-    /**
-     * Метод добавляет постер и файл изображения
-     *
-     * @param file - файл изображения
-     * @param filename - имя файла
-     * @return PosterEntity
-     */
     @Override
     public PosterEntity addPoster(MultipartFile file, String filename) throws IOException {
         byte[] data = file.getBytes();
@@ -46,12 +38,6 @@ public class PosterServiceImpl implements PosterService {
         log.info("Постер с ID: {} добавлен", newPoster.getId());
         return newPoster;
     }
-
-    /**
-     * Метод получения постера
-     *
-     * @param posterEntity - постер
-     */
     @Override
     public Pair<byte[], String> getPosterData(PosterEntity posterEntity) {
         if (posterEntity == null) {
@@ -59,14 +45,6 @@ public class PosterServiceImpl implements PosterService {
         }
         return getByteStringPair(posterEntity.getId(), log, posterEntity.getPath(), "Постер");
     }
-
-    /**
-     * Метод изменения постера
-     *
-     * @param poster - постер к изменению
-     * @param file - файл изображения
-     * @param filename - имя файла
-     */
     @Override
     public PosterEntity updatePoster(PosterEntity poster, MultipartFile file, String filename) {
         if (poster == null || poster.getId() == null) {
@@ -86,12 +64,6 @@ public class PosterServiceImpl implements PosterService {
         }
         return poster;
     }
-
-    /**
-     * Метод удаления постера и файла с изображением
-     *
-     * @param posterEntity - постер к удалению
-     */
     @Override
     public void deletePoster(PosterEntity posterEntity) {
         Path path = Path.of(posterEntity.getPath());
@@ -102,14 +74,6 @@ public class PosterServiceImpl implements PosterService {
         }
         posterRepository.delete(posterEntity);
     }
-
-    /**
-     * Метод генерирует путь к постеру (path)
-     *
-     * @param file - файл изображения
-     * @param filename - имя файла
-     * @return String path
-     */
     @Override
     public Path generatePath(MultipartFile file, String filename) {
         return getPath(file, filename, postersDir);
