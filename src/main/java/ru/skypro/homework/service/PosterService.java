@@ -37,9 +37,9 @@ public interface PosterService {
     /**
      * Метод удаления постера и файла с изображением
      *
-     * @param image - постер к удалению
+     * @param poster - постер к удалению
      */
-    void deletePoster(PosterEntity image);
+    void deletePoster(PosterEntity poster);
 
     /**
      * Метод генерирует путь к постеру (path)

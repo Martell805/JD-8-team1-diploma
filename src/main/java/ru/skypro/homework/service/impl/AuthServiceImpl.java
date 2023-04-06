@@ -72,12 +72,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    /**
-     * Метод смены пароля пользователя.
-     *
-     * @param body тело запроса
-     * @return - boolean
-     */
     @Override
     public boolean changePassword(NewPassword body) {
         manager.changePassword(
