@@ -19,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.User;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.service.VerificationUserService;
@@ -76,12 +75,7 @@ public class UserController {
             produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public ResponseEntity<byte[]> getAvatarOfUser(
             @Parameter(description = "id of user for process")
-            @PathVariable Integer userId,
-            Authentication authentication) {
-
-        if(!verificationUserService.verifySameUserOrAdmin(userId, authentication)){
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+            @PathVariable Integer userId) {
 
         Pair<byte[], String> pair = userService.getAvatarOfUser(userId);
         return read(pair);
@@ -98,9 +92,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")})
     @PatchMapping(value = "me", produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<User> updateUser(Authentication authentication,
-            @Parameter(in = ParameterIn.DEFAULT, required = true, schema = @Schema()) @Valid @RequestBody User body) {
+                                           @Parameter(in = ParameterIn.DEFAULT, required = true, schema = @Schema()) @Valid @RequestBody User body) {
 
-        if(!verificationUserService.verifySameUserOrAdmin(body.getId(), authentication)){
+        if (!verificationUserService.verifySameUserOrAdmin(body.getId(), authentication)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
