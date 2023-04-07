@@ -69,15 +69,27 @@ public interface AdsService {
     ResponseWrapperAds getAdsMe(String username);
 
     /**
-     * Возвращает сущьность объявления по id
+     * Возвращает сущность объявления по id
      *
      * @param id
      * @return
      */
     AdsEntity getAds(Integer id);
 
-    Pair<byte[], String> getPoster(Integer idAds);
+    /**
+     * Метод получает постер для объявления по его ID
+     *
+     * @param adsId ID объявления
+     * @return poster
+     */
+    Pair<byte[], String> getPoster(Integer adsId);
 
+    /**
+     * Метод изменяет постер для объявления по ID объявления (или добавляет постер)
+     *
+     * @param adsId ID объявления
+     * @return poster
+     */
     Pair<byte[], String> updatePosterOfAds(Integer adsId, MultipartFile image) throws IOException;
 }
 

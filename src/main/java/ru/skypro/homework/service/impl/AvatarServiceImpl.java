@@ -30,14 +30,6 @@ public class AvatarServiceImpl implements AvatarService {
         this.avatarsDir = avatarDir;
         this.avatarRepository = avatarRepository;
     }
-
-    /**
-     * Метод добавляет аватар и файл изображения
-     *
-     * @param file - файл изображения
-     * @param filename - имя файла
-     * @return AvatarEntity
-     */
     @Override
     public AvatarEntity addAvatar(MultipartFile file, String filename) throws IOException {
         byte[] data = file.getBytes();
@@ -47,12 +39,6 @@ public class AvatarServiceImpl implements AvatarService {
         log.info("Аватар с ID: {} добавлен", newAvatar.getId());
         return newAvatar;
     }
-
-    /**
-     * Метод получения аватара
-     *
-     * @param avatarEntity - аватар
-     */
     @Override
     public Pair<byte[], String> getAvatarData(AvatarEntity avatarEntity) {
         if (avatarEntity == null) {
@@ -60,14 +46,6 @@ public class AvatarServiceImpl implements AvatarService {
         }
         return getByteStringPair(avatarEntity.getId(), log, avatarEntity.getPath(), "Аватар");
     }
-
-    /**
-     * Метод изменения аватара
-     *
-     * @param avatar - постер к изменению
-     * @param file - файл изображения
-     * @param filename - имя файла
-     */
     @Override
     public AvatarEntity updateAvatar(AvatarEntity avatar, MultipartFile file, String filename) {
         if (avatar == null || avatar.getId() == null) {
@@ -87,12 +65,6 @@ public class AvatarServiceImpl implements AvatarService {
         }
         return avatar;
     }
-
-    /**
-     * Метод удаления аватара и файла с изображением
-     *
-     * @param avatarEntity - постер к удалению
-     */
     @Override
     public void deleteAvatar(AvatarEntity avatarEntity) {
         Path path = Path.of(avatarEntity.getPath());
@@ -103,14 +75,6 @@ public class AvatarServiceImpl implements AvatarService {
         }
         avatarRepository.delete(avatarEntity);
     }
-
-    /**
-     * Метод генерирует путь к аватару (path)
-     *
-     * @param file     - файл изображения
-     * @param filename - имя файла
-     * @return String path
-     */
     @Override
     public Path generatePath(MultipartFile file, String filename) {
         return getPath(file, filename, avatarsDir);

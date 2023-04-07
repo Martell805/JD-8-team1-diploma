@@ -64,5 +64,10 @@ public interface CommentService {
      */
     ResponseWrapperComment getAllCommentsByAd(Integer id);
 
+    /**
+     * Метод удаляет все комментарии к объявлению по его ID, используя nativeQuery
+     *
+     * @param id - ID объявления
+     */
     void removeAllCommentsOfAds(Integer id);
 }
