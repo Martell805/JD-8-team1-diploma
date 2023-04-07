@@ -1,9 +1,31 @@
 package ru.skypro.homework.service;
 
+import ru.skypro.homework.dto.NewPassword;
 import ru.skypro.homework.dto.RegisterReq;
-import ru.skypro.homework.dto.Role;
 
 public interface AuthService {
+    /**
+     * Метод авторизации пользователя.
+     *
+     * @param userName email пользователя
+     * @param password пароль пользователя
+     * @return - boolean
+     */
     boolean login(String userName, String password);
-    boolean register(RegisterReq registerReq, Role role);
+
+    /**
+     * Метод регистрации пользователя.
+     *
+     * @param registerReq данные регистрационной формы
+     * @return - boolean
+     */
+    boolean register(RegisterReq registerReq);
+
+    /**
+     * Метод смены пароля пользователя.
+     *
+     * @param body тело запроса
+     * @return - boolean
+     */
+    boolean changePassword(NewPassword body);
 }
